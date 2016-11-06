@@ -18,6 +18,7 @@
 #include <tchar.h>
 
 #include <map>
+#include <fstream>
 #include <string>
 
 
