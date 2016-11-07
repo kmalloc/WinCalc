@@ -73,8 +73,7 @@ calc_type_t LoadCalcFile(const TCHAR* path) {
 
 	HANDLE hFind = FindFirstFile(szDir, &ffd);
 
-	if (INVALID_HANDLE_VALUE == hFind)
-	{
+	if (INVALID_HANDLE_VALUE == hFind) {
 		return ret;
 	}
 
@@ -82,13 +81,12 @@ calc_type_t LoadCalcFile(const TCHAR* path) {
 
 	std::string line;
 
-	do
-	{
+	do {
 		std::ifstream wif(ffd.cFileName);
 		std::map<std::string, std::string> tmp;
 
 		while (std::getline(wif, line)) {
-			size_t sz = line.find(L':');
+			size_t sz = line.find(':');
 			if (sz == std::string::npos) continue;
 
 			tmp[line.substr(0, sz)] = line.substr(sz + 1);
@@ -115,8 +113,8 @@ std::string PerformWinCalc(HWND hDlg) {
 
 	std::map<std::string, CalcParser::OperandType> var;
 
-	var["w"] = w;
-	var["h"] = h;
+	var["c"] = w;
+	var["k"] = h;
 
 	std::string err;
 	CalcParser::CalculatorParser parser;
@@ -130,8 +128,13 @@ std::string PerformWinCalc(HWND hDlg) {
 		err = "";
 		auto v = parser.GenValue(it->second, var, err);
 
-		snprintf(val, sizeof buff, "%f", boost::get<double>(v));
-		ret += it->first + ": " + val + "\n";
+		try {
+			snprintf(val, sizeof buff, "%g", boost::get<double>(v));
+			ret += it->first + ": " + val + "\n";
+		}
+		catch (...) {
+			ret += it->first + ": " + "¼ÆËã³ö´í\n";
+		}
 	}
 	
 	return ret;
