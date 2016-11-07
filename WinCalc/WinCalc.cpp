@@ -29,14 +29,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	g_file_2_formula = LoadCalcFile(g_confgDir);
 	if (g_file_2_formula.empty()) {
 		// TODO
-		return false;
 	}
 
 	HWND hDlg;
 	hDlg = CreateDialogParam(hInstance, MAKEINTRESOURCE(IDD_MAIN_WIN), 0, DialogProc, 0);
 	ShowWindow(hDlg, nCmdShow);
 
-	{
+	if (!g_file_2_formula.empty()) {
 		HWND hcb = GetDlgItem(hDlg, IDC_TYPE_CBB);
 		for (auto i = g_file_2_formula.begin(); i != g_file_2_formula.end(); ++i) {
 			SendMessage(hcb, CB_ADDSTRING, 0, (LPARAM)i->first.c_str());
